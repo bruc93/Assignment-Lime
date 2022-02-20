@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Project
+namespace Application
 {
     internal class Person
     {
         public string name { get; set; }
         public string id { get; set; }
 
+        public Dictionary<string,Meeting> m_meetings { get; set; }
         public Person(string _name, string _id)
         {
             this.name = _name;

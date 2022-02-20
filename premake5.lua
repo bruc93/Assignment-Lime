@@ -1,32 +1,30 @@
 -- Solution configuration file.
-solution "Project"
-configurations { "Debug" }
-platforms { "Win64" }
-    project "Project"
-        targetname "Project"
-        location "Project"
-        kind "SharedLib"
-        language "C#"
-        files { "Project/**.cs" } 
-        excludes { "**/bin/**", "**/obj/**" } 
-        links { "System","System.Core","Microsoft.CSharp","System.Runtime.Serialization","System.ComponentModel.DataAnnotations" }
+workspace "Project"
+   configurations { "Debug", "Release" }
 
-        configuration "Debug"
-            defines { "TRACE","DEBUG" }
-            optimize "On"
-            targetdir "Project/bin/"
-            kind "ConsoleApp"
+project "Application"
+    kind "ConsoleApp"
+    language "C#"
+    files{"src/*.cs"}
 
-        --postbuildcommands {"copy /Y $(ProjectDir)freebusy.txt $(ProjectDir)bin\kekland.txt"}
-        postbuildcommands {"{COPYFILE} $(ProjectDir)freebusy.txt $(ProjectDir)bin\\kekland.txt"}
+    configuration "Debug"
+        targetdir("src/Debug/bin/")
+        objdir("src/Debug/obj")
+        postbuildcommands {"{COPYFILE} $(ProjectDir)\\src\\freebusy.txt $(ProjectDir)\\src\\Debug\\bin\\freebusy.txt"}
+    configuration "Release"
+        targetdir("Project/Release/bin/")
+        objdir("Project/Release/obj")
+        postbuildcommands {"{COPYFILE} $(ProjectDir)\\src\\freebusy.txt $(ProjectDir)\\src\\Release\\bin\\freebusy.txt"}
+    
+
 --Clean.
 newaction {
     trigger = "clean",
     description = "Remove all binaries and intermediate binaries, and vs files.",
     execute = function()
         print("Removing binaries")
-        os.rmdir("Project/bin")
-        os.rmdir("Project/obj")
+        os.rmdir("src/Debug")
+        os.rmdir("src/Release")
 
         print("Removing project files")
         os.rmdir("./.vs")
@@ -34,6 +32,8 @@ newaction {
         os.remove("**.vcxproj")
         os.remove("**.vcxproj.filters")
         os.remove("**.vcxproj.user")
+        os.remove("**.csproj.user")
+        os.remove("**.csproj")
         print("Done")
     end
 }
