@@ -16,10 +16,6 @@ project "Application"
         objdir("src/Release/obj")
         postbuildcommands {"{COPYFILE} $(ProjectDir)\\src\\freebusy.txt $(ProjectDir)\\src\\Release\\bin\\freebusy.txt"}
 
-project "Application.UnitTests"
-        language "C#"
-        files{"src/*.cs"}
-
 --Clean.
 newaction {
     trigger = "clean",
