@@ -11,7 +11,7 @@ namespace Application
        // Key = Date string, Value = Person
        private Dictionary<string, Person> m_persons = new Dictionary<string, Person>();
        
-       // Loads text tile into the system
+       // Loads text file into the system
        public bool LoadFile(string filePath)
        {
            // Store all lines from file in list
@@ -30,11 +30,11 @@ namespace Application
        }
 
        // Try to schedule a new meeting for all involved based on the given parameters
-       public bool ScheduleMeeting(List<string> ids, int duration, string startDateTime, string endDateTime, int startHour, int endHour)
+       public Meeting ScheduleMeeting(List<string> ids, int duration, string startDateTime, string endDateTime, int startHour, int endHour)
        {
            // Early control check
-           if (ids.Count < 1 || duration < 30 || (duration/60) > endHour-startHour)
-               return false;
+           if (ids.Count < 1 || duration < 30 || (duration/60) > endHour-startHour || startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23)
+               return null;
            
            // Generate DateTimes
            DateTime startDate = Meeting.GenerateDateTime(startDateTime);
@@ -48,7 +48,13 @@ namespace Application
            {
                // Generate new meeting based on startDate
                Meeting currentMeeting = new Meeting(startDate, myCal.AddMinutes(startDate, duration));
-               // If collides for person break and end this loop
+               // If new meeting goes over office hours skip to next date
+               if (currentMeeting.GetEndTime().Hour > endHour)
+               {
+                   startDate = ResetStartDate(startHour, startDate, myCal);
+                   continue;
+               }
+               // If a meeting collides for person with another meeting break and end this loop
                bool isColliding = false;
                foreach (var id in ids)
                {
@@ -61,30 +67,29 @@ namespace Application
                        }
                    }
                }
-
                // No collision detected can return a fit
                if (!isColliding)
                {
-                   Console.WriteLine("Meeting can start at: " + currentMeeting.GetStartTime().ToShortDateString() + " " + currentMeeting.GetStartTime().ToShortTimeString());
-                   Console.WriteLine("Meeting will end at: " + currentMeeting.GetEndTime().ToShortDateString() + " " + currentMeeting.GetEndTime().ToShortTimeString());
-                   return true;
+                   return currentMeeting;
                }
-
                // Step 30 min each iteration
                startDate = myCal.AddMinutes(startDate, 30);
-
                // Reset hours back to start hour and add a day
                if (startDate.Hour >= endHour || currentMeeting.GetEndTime().Hour > endHour)
                {
-                    startDate = myCal.AddDays(startDate, 1);
-                    startDate = myCal.AddHours(startDate, -(startDate.Hour-startHour));
+                   startDate = ResetStartDate(startHour, startDate, myCal);
                }
            }
 
-           return false;
+           return null;
        }
-
-
+       // Reset the start date back to the beginning of the office hour on the next day!
+       private static DateTime ResetStartDate(int startHour, DateTime startDate, Calendar myCal)
+       {
+           startDate = myCal.AddDays(startDate, 1);
+           startDate = myCal.AddHours(startDate, -(startDate.Hour - startHour));
+           return startDate;
+       }
        // Adds information generated into the m_persons container
        private void AddPackage(string[] packageInfo)
        {
@@ -120,6 +125,11 @@ namespace Application
                // Add the meeting for the affected person in the system 
                m_persons[packageInfo[0]].AddMeeting(meeting);
            }
+       }
+       // Return all the persons in the system as a dictionary
+       public Dictionary<string, Person> GetPersons()
+       {
+           return this.m_persons;
        }
     }
 }

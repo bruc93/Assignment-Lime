@@ -12,10 +12,13 @@ project "Application"
         objdir("src/Debug/obj")
         postbuildcommands {"{COPYFILE} $(ProjectDir)\\src\\freebusy.txt $(ProjectDir)\\src\\Debug\\bin\\freebusy.txt"}
     configuration "Release"
-        targetdir("Project/Release/bin/")
-        objdir("Project/Release/obj")
+        targetdir("src/Release/bin/")
+        objdir("src/Release/obj")
         postbuildcommands {"{COPYFILE} $(ProjectDir)\\src\\freebusy.txt $(ProjectDir)\\src\\Release\\bin\\freebusy.txt"}
-    
+
+project "Application.UnitTests"
+        language "C#"
+        files{"src/*.cs"}
 
 --Clean.
 newaction {

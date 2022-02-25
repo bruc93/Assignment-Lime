@@ -20,8 +20,7 @@
     <OutputPath>src\Debug\bin\</OutputPath>
     <BaseIntermediateOutputPath>src\Debug\obj\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -29,11 +28,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Project\Release\bin\</OutputPath>
-    <BaseIntermediateOutputPath>Project\Release\obj\</BaseIntermediateOutputPath>
+    <OutputPath>src\Release\bin\</OutputPath>
+    <BaseIntermediateOutputPath>src\Release\obj\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
